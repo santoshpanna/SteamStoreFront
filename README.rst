@@ -2,14 +2,14 @@
 Steam Store Front
 =================
 
-.. image:: https://img.shields.io/pypi/v/steam_store_front.svg
-        :target: https://pypi.python.org/pypi/steam_store_front
+.. image:: https://img.shields.io/pypi/v/steamstorefront.svg
+        :target: https://pypi.python.org/pypi/steamstorefront
 
-.. image:: https://img.shields.io/travis/santoshpanna/steam_store_front.svg
-        :target: https://travis-ci.org/santoshpanna/steam_store_front
+.. image:: https://img.shields.io/travis/santoshpanna/steamstorefront.svg
+        :target: https://travis-ci.org/santoshpanna/steamstorefront
 
-.. image:: https://readthedocs.org/projects/steam-store-front/badge/?version=latest
-        :target: https://steam-store-front.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/steamstorefront/badge/?version=latest
+        :target: https://steamstorefront.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 Steam Store Front is an easy to use package to get game or app details from steam store.
