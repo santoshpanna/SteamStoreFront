@@ -17,7 +17,7 @@ Steam Store Front is an easy to use package to get game or app details from stea
 .. note:: It is not a client. You cannot interact with steam to make purchase or do actions which requires login.*
 
 * Free software: MIT license
-* Documentation: https://steam-store-front.readthedocs.io.
+* Documentation: https://steamstorefront.readthedocs.io
 
 Features
 ********
