@@ -1,0 +1,18 @@
+language: python
+python:
+- 3.8
+- 3.7
+- 3.6
+- 3.5
+install: pip install -U tox-travis
+script: tox
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: santoshpanna
+  password:
+    secure: YjVytTYzId+6kLA6Ud+lzq96fnNtXJz7UmgQkGJ2JkNPVTs3spetLolRX5LYSPJMqwL4dSLuPQXTU9Kwl8sKxKTi0pFKZsXwaXKyzQAb83Js/Q44E91BjCDrI7znfeqpWL4W/4DmVuP9oA1aUhG5+g/CKVeqScrgZNAPWJulZmNlEWndQxWDmyfvjEyHXG2Qh1mRTJyfY2lrCG3463nuAHTeS9/g1qz4JvZjM5yYyR8X4coNZOBNVbIe8Y80fmB60D5FX2vKdHCJVS/j4lAbbUlNsMnGZeHeUnFIEBzOY7D8JitfCfy67Sb6CDHJk9zzlKgBse0Txok+cZD2VsydYqTsgV2usrIPCU/FwpHIISFx11gNV2fYJ5ToQO6w/L4HyVSSEnqj4XvQCirDTAZOg36nj41wc5qGKSHrqC8Pvwwf2eEY/Nb38RtEj2lZ32DsFp2mhV+G5mfgwIyfwkQL8BXUFnhSFeiwOgruRsvHgq9Qtv/HHQA/sczk6fH15tAK9Rln24bkT5KKGPgE/01smm7xqW/fANV1VjJGVtOd6h+QdWkXdkjiVU1F741MSwTae+OBjI/9LIgZUrPb7NBdbbATvCQRC2pYTgJZoZxC7w/kUVxiXjNiP/EThOOsJ4Cv7E0rN78O+7BMOzfyF+e3sXLHTCwfpG29zovLUylWKVY=
+  on:
+    tags: true
+    repo: santoshpanna/steamstorefront
+    python: 3.8
