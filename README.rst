@@ -2,13 +2,13 @@
 Steam Store Front
 =================
 
-.. image:: https://img.shields.io/pypi/v/steamstorefront.svg
+.. image:: https://img.shields.io/pypi/v/steamstorefront.svg?style=flat-square
         :target: https://pypi.python.org/pypi/steamstorefront
 
-.. image:: https://img.shields.io/travis/santoshpanna/steamstorefront.svg
-        :target: https://travis-ci.org/santoshpanna/steamstorefront
+.. image:: https://img.shields.io/travis/com/santoshpanna/steamstorefront?style=flat-square   :alt: Travis (.com)
+        :target: https://travis-ci.com/santoshpanna/SteamStoreFront
 
-.. image:: https://readthedocs.org/projects/steamstorefront/badge/?version=latest
+.. image:: https://img.shields.io/readthedocs/steamstorefront?style=flat-square   :alt: Read the Docs
         :target: https://steamstorefront.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
