@@ -29,7 +29,7 @@ def testGetName(app):
 
 # returns required age
 def testGetRequiredAge(app):
-    assert app.getRequiredAge(appid=appid, category='app') == "18"
+    assert type(app.getRequiredAge(appid=appid, category='app')) == type(str())
 
 # returns is free
 def testGetIsFree(app):
@@ -197,7 +197,7 @@ def testGetScreenshots(app):
 # returns movies
 def testGetMovies(app):
     data = app.getMovies(appid=appid, category='app')
-    test = (type(data) == type(list()) and data[0]["id"] == 256663321)
+    test = (type(data) == type(list()) and data[0]["id"] == type(int()))
     assert test == True
 
 # returns recommendations

@@ -10,7 +10,9 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = []
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setup_requirements = ['pytest-runner', ]
 
@@ -39,11 +41,11 @@ setup(
     include_package_data=True,
     keywords='steamstorefront',
     name='steamstorefront',
-    packages=find_packages(include=['steamstorefront', 'steamstorefront.*']),
+    packages=find_packages(include=['steamstorefront',]),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/santoshpanna/steamstorefront',
-    version='0.0.1',
+    version='0.0.2',
     zip_safe=False,
 )
