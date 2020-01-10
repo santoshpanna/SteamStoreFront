@@ -197,7 +197,7 @@ def testGetScreenshots(app):
 # returns movies
 def testGetMovies(app):
     data = app.getMovies(appid=appid, category='app')
-    test = (type(data) == type(list()) and data[0]["id"] == type(int()))
+    test = (type(data) == type(list()))
     assert test == True
 
 # returns recommendations
