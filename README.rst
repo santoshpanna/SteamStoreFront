@@ -5,10 +5,10 @@ Steam Store Front
 .. image:: https://img.shields.io/pypi/v/steamstorefront.svg?style=flat-square
         :target: https://pypi.python.org/pypi/steamstorefront
 
-.. image:: https://img.shields.io/travis/com/santoshpanna/steamstorefront?style=flat-square   :alt: Travis (.com)
+.. image:: https://img.shields.io/travis/com/santoshpanna/steamstorefront?style=flat-square
         :target: https://travis-ci.com/santoshpanna/SteamStoreFront
 
-.. image:: https://img.shields.io/readthedocs/steamstorefront?style=flat-square   :alt: Read the Docs
+.. image:: https://img.shields.io/readthedocs/steamstorefront?style=flat-square
         :target: https://steamstorefront.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
