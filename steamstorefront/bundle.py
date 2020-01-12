@@ -147,7 +147,7 @@ class Bundle:
                 package_item['platforms']['linux'] = True if item.select('.linux') else False
                 
                 # categories
-                package_item['platforms'] = item.select('.tab_item_details')[0].text.strip().split(",")
+                package_item['categories'] = item.select('.tab_item_details')[0].text.strip().split(",")
                 
                 details['package_item'].append(package_item)
                 

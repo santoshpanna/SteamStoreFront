@@ -64,6 +64,8 @@ class SteamStoreFront:
                 # appid is valid, now assign category
                 # default category is app
                 if self.appid:
+                    self.category = 'app'
+
                     #valid categories
                     accepted = ('sub', 'package', 'app', 'bundle')
 
@@ -79,23 +81,28 @@ class SteamStoreFront:
                 # query for appid
                 obj = FuzzySearch()
                 self.appid = obj.getAppID(kwargs["name"])
+                self.category = 'app'
                 if not self.appid:
                     raise _AppNotFound("App not found for this game.")
 
             # url was passed
             if "url" in kwargs:
+                url = ''
+
                 # check if url is valid
                 valid = ('https://store.steampowered.com', 'store.steampowered.com')
-                if url.startswith(valid):
-                    if url.startswith(valid[1]):
-                        url = "https://"+url
+                if kwargs["url"].startswith(valid):
+                    if kwargs["url"].startswith(valid[1]):
+                        url = "https://"+kwargs["url"]
+                    else:
+                        url = kwargs["url"]
 
                     # if url is valid get category and appid
-                    self.category = url.split("/")[3]
+                    self.category = kwargs["url"].split("/")[3]
                     if self.category == "publisher":
-                        self.publisher = url.split("/")[4]
+                        self.publisher = kwargs["url"].split("/")[4]
                     else:
-                        self.appid = url.split("/")[4]
+                        self.appid = kwargs["url"].split("/")[4]
 
         if "init" not in kwargs:
             # no arugments were passed or details are not filled
@@ -146,6 +153,27 @@ class SteamStoreFront:
         else:
             raise _AppNotFound("No app with {} appid.".format(self.appid))
 
+    # returns store url
+    def getLink(self, **kwargs):
+        """
+            getLink(appid=appid, category=category, name=name, url=url)
+
+            .. code-block:: python
+                getLink(appid=appid, category=category, name=name, url=url)
+            
+            - supported categories = [app, sub, bundle]
+            
+            :return: returns store url
+            :rtype: string
+        """
+
+        if self.category == 'app':
+            return ('https://store.steampowered.com/app/'+self.appid)
+        elif self.category == 'sub' or self.category == 'package':
+            return('https://store.steampowered.com/sub/'+self.appid)
+        elif self.category == 'bundle':
+            return('https://store.steampowered.com/bundle/'+self.appid)
+
     # function to return price
     # currency only works with app and sub|package
     def getPrice(self, **kwargs): 
@@ -154,7 +182,7 @@ class SteamStoreFront:
 
             .. code-block:: python
 
-                getPrice(appid=appid, category=category, name=name, url=url)
+                getPrice(appid=appid, category=category, name=name, url=url, currency=currency)
             
             - supported categories = [app, sub, bundle]
             - supported categories with currency = [app, sub]
@@ -1074,8 +1102,8 @@ class SteamStoreFront:
             
             - supported categories = [app]
             
-            :return: returns ratings
-            :rtype: ?
+            :return: returns (review_score, rating, review_summary)
+            :rtype: tuple
         """
         
         # store data
