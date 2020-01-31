@@ -90,7 +90,7 @@ class Package:
     def getPriceInCurrency(self, appid, currency):
         req = requests.get(self.api_url+appid+"&cc="+currency).json()
 
-        if req[appid]["success"]:
+        if req[appid]["data"]:
             return req[appid]["data"]["price"]
         else:
             return None

@@ -34,13 +34,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/santoshpanna/steam_store_front
+    $ git clone git://github.com/santoshpanna/steamstorefront
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/santoshpanna/steam_store_front/tarball/master
+    $ curl -OJL https://github.com/santoshpanna/steamstorefront/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -49,5 +49,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/santoshpanna/steam_store_front
-.. _tarball: https://github.com/santoshpanna/steam_store_front/tarball/master
+.. _Github repo: https://github.com/santoshpanna/steamstorefront
+.. _tarball: https://github.com/santoshpanna/steamstorefront/tarball/master

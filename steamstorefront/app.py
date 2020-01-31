@@ -347,12 +347,15 @@ class App:
     def getRatings(self, appid):
         req = requests.get("https://store.steampowered.com/appreviews/"+appid+"?json=1").json()
 
-        if req["success"]:
+        if req["query_summary"]:
             # Review Score = frac{Positive Reviews}{Total Reviews}
-            review_score = req["query_summary"]["total_positive"]/req["query_summary"]["total_reviews"]
-            # Rating = Review Score - (Review Score - 0.5)*2^{-log_{10}(Total Reviews + 1)})
-            rating = review_score - (review_score - 0.5)*(2**(-1*math.log10(req["query_summary"]["total_reviews"]+1)))
-            return review_score*100, rating*100, req["query_summary"]
+            try:
+                review_score = req["query_summary"]["total_positive"]/req["query_summary"]["total_reviews"]
+                # Rating = Review Score - (Review Score - 0.5)*2^{-log_{10}(Total Reviews + 1)})
+                rating = review_score - (review_score - 0.5)*(2**(-1*math.log10(req["query_summary"]["total_reviews"]+1)))
+                return review_score*100, rating*100, req["query_summary"]
+            except:
+                return 0,0, req["query_summary"]
         else:
             return 0,0, req["query_summary"]
 
@@ -360,7 +363,7 @@ class App:
     def getPriceInCurrency(self, appid, currency):
         req = requests.get(self.api_url+appid+"&cc="+currency+"&filters=price_overview").json()
 
-        if req[appid]["success"]:
+        if req[appid]["data"]:
             return req[appid]["data"]["price_overview"]
         else:
             return None
