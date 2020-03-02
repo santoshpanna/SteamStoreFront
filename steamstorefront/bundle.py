@@ -90,7 +90,8 @@ class Bundle:
             details['header_image'] = leftcol.select('.package_header')[0].get('src')
             
             # description
-            details['bundle_description'] = leftcol.select('.bundle_description')[0].select('p')[0].text
+            if leftcol.select('.bundle_description'):
+                details['bundle_description'] = leftcol.select('.bundle_description')[0].select('p')[0].text
             
             # from rightcol
             right_detail = str(rightcol.findAll('div', {'class':'details_block'})[0])
