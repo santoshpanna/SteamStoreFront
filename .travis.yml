@@ -4,15 +4,16 @@ python:
 - 3.7
 - 3.6
 - 3.5
-install: pip install -U tox-travis
+install: "pip install -U tox-travis"
 script: tox
 deploy:
   provider: pypi
-  distributions: sdist bdist_wheel
-  user: santoshpanna
+  distributions: "sdist bdist_wheel"
+  user: "__token__"
   password:
-    secure: JsnI1IkkKYN2Yhkz1GjPLggfBROIifavd0+HgoK8Jwu8ljOZfRgTDtHZuS7997QnAK8KdvBWvlD/miceKX6NNbUYBADKOFSz61Yj+ZSJL92ji/hIrkgMEaQhDoeR0V7dQe6zfk6ntz5BOrt+85j+g3e/EOe45NBCyBXGgLSHRlu+gu9RQ68nE2ZZ6IqhPlsXZWpVDsem6DHPAx8tMALWXMOx/gOP5fjp5KL/6FtR7vDZ6CZaRyrL/P6LNf5SbRnPlNRA30o1CZ2uRjUOHt9jfXQykDRLUXZX5KsHtfhXUSfKUBS4ZPVwwTEAJukSMOQRG854tzfeWEy++7/eiulAQXHOkvjegxKmEtvAAB1RIxyNn2nz7PIPCFIMFXRtkVKtaosOo+NfV3hWzWGtL4R+IT4Pw3nnD3r4FU5RlyzuG3p+YBgteBsLiHIjGtIrBtDYHG+BaCGf7ye39CZldA7VCcKJ7Z8Iyw3vK0gdKyb+GyZleedXArsHQjhzymecoYYLosWwjTH2EYKwGcloVZiwgwy4lJR3h7k9uYT1H3tNyWVrwRVBAxR08tACo0m1Z+Mgov3ieDGOt/lXngzNJS5ASCsU6i89Pbxw8r1QbCfnC1MpH6B8qxZ45XlF8Qsq0t8JWYoEitJ63ZogQiMFoQpbHcpynoQFhPr5uZdsPgjK7Zo=
+    secure: "rUNqL7Ky8fm6vbqc40yYRq+TD1LMc+CRS7zRdkR9MBabOc1rB9h/k9adclrlzk8cmfBa+PRMlO3hixSenqyB799EE+cBLvl2FJ8gF08MCFDfA1IQNHd4JuzhALpeZgUtkhL6+ds3iYj/OlPk/teH3i5lIvd+ZzDHJnTNb/0M6FeUETFI7bhshCW+0RtLKPqPIH7H3C1VTPpOOysn1D4W36IPRPWADZCMxBr7ExbGQO9L6Fxgws8bFRnT9E/b5Y5/usidgR+DWhMMxt1qcM91J3BpOc0CnVr6G4R0WlBREyXmhXRqECBKJAFwqoL8xAXfNitotebdNC17kf4++u+QttOMd9hgwAFkA9/LtLrQXasmUAQlepwquSZ3ZeNe2VY8VwpYYnwpKvwpQdqZVfs4l1W1NG4JvqCRwbmRC4VuHbFTVLRsYRSPjxkI/+2yWBcz1KMxZiiuznr9WdZYmyoFRDrKTl5Qz+YDpBAeWHXlP5I0TZzzSQdQF3rzwzPdtF6UyxwHGMaCAYEAlUP9APYwXM30aGSpckUbVxMGvpPJi0aMk8qyGfXjI+aCf4EPHVto93bA1qd0F6UkJ3UFvlDy8ctk4iu1PTpjarYD5pWEYuQ1hFxPM7K/XlwsHub+7uyCdh4C6xty9hrjM1Gof0s0UTCwJezAawhaT+oDRpveS4M="
   on:
+    branch: "master"
     tags: true
-    repo: santoshpanna/steamstorefront
+    repo: "santoshpanna/SteamStoreFront"
     python: 3.8
