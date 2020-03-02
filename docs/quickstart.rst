@@ -4,7 +4,7 @@ Quickstart
 ==========
 Arguments::
 
-- It supports 3 types of app detection
+It supports 3 types of app detection
 
  - Appid
 
@@ -46,7 +46,7 @@ Initializing from constructor
 
     import steamstorefront
     
-    ssf = SteamStoreFront(appid=203160, category="app")
+    ssf = steamstorefront.SteamStoreFront(appid=203160, category="app")
 
     ssf.getName()
     ssf.getPrice()

@@ -44,7 +44,7 @@ Constructor:
 
     import steamstorefront
     
-    ssf = SteamStoreFront(appid=203160, category="app")
+    ssf = steamstorefront.SteamStoreFront(appid=203160, category="app")
 
     ssf.getName()
     ssf.getPrice()
