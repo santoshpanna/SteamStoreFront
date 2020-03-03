@@ -14,6 +14,6 @@ deploy:
     secure: "rUNqL7Ky8fm6vbqc40yYRq+TD1LMc+CRS7zRdkR9MBabOc1rB9h/k9adclrlzk8cmfBa+PRMlO3hixSenqyB799EE+cBLvl2FJ8gF08MCFDfA1IQNHd4JuzhALpeZgUtkhL6+ds3iYj/OlPk/teH3i5lIvd+ZzDHJnTNb/0M6FeUETFI7bhshCW+0RtLKPqPIH7H3C1VTPpOOysn1D4W36IPRPWADZCMxBr7ExbGQO9L6Fxgws8bFRnT9E/b5Y5/usidgR+DWhMMxt1qcM91J3BpOc0CnVr6G4R0WlBREyXmhXRqECBKJAFwqoL8xAXfNitotebdNC17kf4++u+QttOMd9hgwAFkA9/LtLrQXasmUAQlepwquSZ3ZeNe2VY8VwpYYnwpKvwpQdqZVfs4l1W1NG4JvqCRwbmRC4VuHbFTVLRsYRSPjxkI/+2yWBcz1KMxZiiuznr9WdZYmyoFRDrKTl5Qz+YDpBAeWHXlP5I0TZzzSQdQF3rzwzPdtF6UyxwHGMaCAYEAlUP9APYwXM30aGSpckUbVxMGvpPJi0aMk8qyGfXjI+aCf4EPHVto93bA1qd0F6UkJ3UFvlDy8ctk4iu1PTpjarYD5pWEYuQ1hFxPM7K/XlwsHub+7uyCdh4C6xty9hrjM1Gof0s0UTCwJezAawhaT+oDRpveS4M="
   on:
     branch: "master"
-    tags: true
+    tags: false
     repo: "santoshpanna/SteamStoreFront"
     python: 3.8
