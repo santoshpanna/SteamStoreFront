@@ -1,5 +1,6 @@
 import requests
 
+
 class Package:
     api_url = "https://store.steampowered.com/api/packagedetails?packageids="
     data = {}
@@ -27,7 +28,7 @@ class Package:
         self.appid = appid
 
         # request the data
-        json = requests.get(self.api_url+appid).json()
+        json = requests.get(self.api_url + appid).json()
 
         # if game exists
         if json[appid]['success']:
@@ -80,7 +81,7 @@ class Package:
     def getController(self, appid):
         self._populate(appid)
         return self.data['controller'] if 'controller' in self.data else None
-    
+
     # returns header image
     def getReleaseDate(self, appid):
         self._populate(appid)
@@ -88,7 +89,7 @@ class Package:
 
     # returns price in specific currency
     def getPriceInCurrency(self, appid, currency):
-        req = requests.get(self.api_url+appid+"&cc="+currency).json()
+        req = requests.get(self.api_url + appid + "&cc=" + currency).json()
 
         if req[appid]["data"]:
             return req[appid]["data"]["price"]

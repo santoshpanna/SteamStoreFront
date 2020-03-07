@@ -1,5 +1,6 @@
 import requests, w3lib.html, math
 
+
 class App:
     api_url = "https://store.steampowered.com/api/appdetails?appids="
     data = {}
@@ -11,7 +12,7 @@ class App:
 
     def _getNormalLanguage(self, text):
         text = w3lib.html.remove_tags(text)
-        return text.replace("*","").replace("languages with full audio support","")
+        return text.replace("*", "").replace("languages with full audio support", "")
 
     # makes a list from text
     # iterates until text is empty 
@@ -21,13 +22,13 @@ class App:
         while text != "":
             review = {}
             review['review'] = text[:text.find("<br>")]
-            text = text[text.find("<br>")+4:]
+            text = text[text.find("<br>") + 4:]
             review['score'] = text[:text.find(" ")]
-            text = text[text.find(" ")+12:]
+            text = text[text.find(" ") + 12:]
             review['link'] = text[:text.find("\"")].replace("https://steamcommunity.com/linkfilter/?url=", "")
-            text = text[text.find(">")+1:]
+            text = text[text.find(">") + 1:]
             review['reviewer'] = text[:text.find("<")]
-            text = text[text.find("<br>")+8:]
+            text = text[text.find("<br>") + 8:]
             reviews.append(review)
         return reviews
 
@@ -40,15 +41,15 @@ class App:
         text = w3lib.html.remove_tags(text, keep=('strong',))
 
         while text != "":
-            key = text[:text.find("</strong>")-1].replace("<strong>","")
-            text = text[text.find("</strong>")+9:]
+            key = text[:text.find("</strong>") - 1].replace("<strong>", "")
+            text = text[text.find("</strong>") + 9:]
             requirement = text[:text.find("<strong>")]
             dict[key] = requirement
             if text.find(">") == -1:
                 dict[key] = text
                 text = ""
             else:
-                text = text[text.find(">")+1:]
+                text = text[text.find(">") + 1:]
 
         return dict
 
@@ -60,7 +61,6 @@ class App:
             dict['recommended'] = self._getDict(list['recommended'])
 
         return dict
-            
 
     '''
         DATA
@@ -112,7 +112,7 @@ class App:
         self.appid = appid
 
         # request the data
-        json = requests.get(self.api_url+appid).json()
+        json = requests.get(self.api_url + appid).json()
 
         # if game exists
         if json[appid]['success']:
@@ -153,7 +153,7 @@ class App:
 
     # returns detailed description
     # format = raw (default) | normal
-    def getDetailedDescription(self, appid, format:str = None):
+    def getDetailedDescription(self, appid, format: str = None):
         self._populate(appid)
 
         # if normal remove just html tags, retain images link
@@ -164,7 +164,7 @@ class App:
 
     # returns about the game
     # format = raw (default) | normal
-    def getAboutTheGame(self, appid, format:str = None):
+    def getAboutTheGame(self, appid, format: str = None):
         self._populate(appid)
         # if normal remove just html tags, retain images link
         if format.lower() == "normal":
@@ -182,18 +182,20 @@ class App:
     def getFullgame(self, appid):
         self._populate(appid)
         return self.data['fullgame'] if 'fullgame' in self.data else None
-    
+
     # returns supported languages
     # format = raw (default) | normal | list
-    def getSupportedLanguages(self, appid, format:str = None):
+    def getSupportedLanguages(self, appid, format: str = None):
         self._populate(appid)
         if format.lower() == "normal":
-            return self._getNormalLanguage(self.data['supported_languages']) if 'supported_languages' in self.data else None
+            return self._getNormalLanguage(
+                self.data['supported_languages']) if 'supported_languages' in self.data else None
         elif format.lower() == "list":
-            return self._getNormalLanguage(self.data['supported_languages']).split(", ") if 'supported_languages' in self.data else None
+            return self._getNormalLanguage(self.data['supported_languages']).split(
+                ", ") if 'supported_languages' in self.data else None
         else:
             return self.data['supported_languages'] if 'supported_languages' in self.data else None
-    
+
     # returns reviews
     # format = raw (default) | list
     '''
@@ -203,7 +205,8 @@ class App:
             {'review': '', 'score': '', 'link': '', 'reviewer'}
         ]
     '''
-    def getReviews(self, appid, format:str = None):
+
+    def getReviews(self, appid, format: str = None):
         self._populate(appid)
         if format.lower() == "list":
             return self._getListReview(self.data['reviews']) if 'reviews' in self.data else None
@@ -214,37 +217,40 @@ class App:
     def getHeaderImage(self, appid):
         self._populate(appid)
         return self.data['header_image'] if 'header_image' in self.data else None
-    
+
     # returns website
     def getWebsite(self, appid):
         self._populate(appid)
         return self.data['website'] if 'website' in self.data else None
-    
+
     # returns pc requirements
     # format = raw (default) | dict
-    def getPCRequirements(self, appid, format:str = None):
+    def getPCRequirements(self, appid, format: str = None):
         self._populate(appid)
         if format.lower() == "dict":
-            return self._getDictionaryRequirements(self.data['pc_requirements']) if 'pc_requirements' in self.data else None
+            return self._getDictionaryRequirements(
+                self.data['pc_requirements']) if 'pc_requirements' in self.data else None
         else:
             return self.data['pc_requirements'] if 'pc_requirements' in self.data else None
-    
+
     # returns mac requirements
     # format = raw (default) | dict
-    def getMacRequirements(self, appid, format:str = None):
+    def getMacRequirements(self, appid, format: str = None):
         self._populate(appid)
 
         if format.lower() == "dict":
-            return self._getDictionaryRequirements(self.data['mac_requirements']) if 'mac_requirements' in self.data else None
+            return self._getDictionaryRequirements(
+                self.data['mac_requirements']) if 'mac_requirements' in self.data else None
         else:
             return self.data['mac_requirements'] if 'mac_requirements' in self.data else None
 
     # returns linux requirements
     # format = raw (default) | dict
-    def getLinuxRequirements(self, appid, format:str = None):
+    def getLinuxRequirements(self, appid, format: str = None):
         self._populate(appid)
         if format.lower() == "dict":
-            return self._getDictionaryRequirements(self.data['linux_requirements']) if 'linux_requirements' in self.data else None
+            return self._getDictionaryRequirements(
+                self.data['linux_requirements']) if 'linux_requirements' in self.data else None
         else:
             return self.data['linux_requirements'] if 'linux_requirements' in self.data else None
 
@@ -326,42 +332,47 @@ class App:
     # returns release date
     def getReleaseDate(self, appid):
         self._populate(appid)
-        return self.data['release_date'] if 'release_date' in self.data else None   
+        return self.data['release_date'] if 'release_date' in self.data else None
 
-    # returns release date
+        # returns release date
+
     def getSupportInfo(self, appid):
         self._populate(appid)
-        return self.data['support_info'] if 'support_info' in self.data else None 
+        return self.data['support_info'] if 'support_info' in self.data else None
 
-    # returns release date
+        # returns release date
+
     def getBackground(self, appid):
         self._populate(appid)
-        return self.data['background'] if 'background' in self.data else None 
+        return self.data['background'] if 'background' in self.data else None
 
-    # returns release date
+        # returns release date
+
     def getContentDescriptors(self, appid):
         self._populate(appid)
-        return self.data['content_descriptors'] if 'content_descriptors' in self.data else None       
+        return self.data['content_descriptors'] if 'content_descriptors' in self.data else None
 
-    # returns ratings
+        # returns ratings
+
     def getRatings(self, appid):
-        req = requests.get("https://store.steampowered.com/appreviews/"+appid+"?json=1").json()
+        req = requests.get("https://store.steampowered.com/appreviews/" + appid + "?json=1").json()
 
         if req["query_summary"]:
             # Review Score = frac{Positive Reviews}{Total Reviews}
             try:
-                review_score = req["query_summary"]["total_positive"]/req["query_summary"]["total_reviews"]
+                review_score = req["query_summary"]["total_positive"] / req["query_summary"]["total_reviews"]
                 # Rating = Review Score - (Review Score - 0.5)*2^{-log_{10}(Total Reviews + 1)})
-                rating = review_score - (review_score - 0.5)*(2**(-1*math.log10(req["query_summary"]["total_reviews"]+1)))
-                return review_score*100, rating*100, req["query_summary"]
+                rating = review_score - (review_score - 0.5) * (
+                            2 ** (-1 * math.log10(req["query_summary"]["total_reviews"] + 1)))
+                return review_score * 100, rating * 100, req["query_summary"]
             except:
-                return 0,0, req["query_summary"]
+                return 0, 0, req["query_summary"]
         else:
-            return 0,0, req["query_summary"]
+            return 0, 0, req["query_summary"]
 
     # returns price in specific currency
     def getPriceInCurrency(self, appid, currency):
-        req = requests.get(self.api_url+appid+"&cc="+currency+"&filters=price_overview").json()
+        req = requests.get(self.api_url + appid + "&cc=" + currency + "&filters=price_overview").json()
 
         if req[appid]["data"]:
             return req[appid]["data"]["price_overview"]

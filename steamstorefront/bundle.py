@@ -1,6 +1,7 @@
 import requests, re, math, w3lib.html
 from bs4 import BeautifulSoup
 
+
 class Bundle:
     store_url = "https://store.steampowered.com/bundle/"
     data = {}
@@ -10,11 +11,11 @@ class Bundle:
         temp = text.find(term)
         if not temp:
             return None
-        text = text[temp+len(term)+5:text.find('<br/>', temp)]
+        text = text[temp + len(term) + 5:text.find('<br/>', temp)]
         text = w3lib.html.remove_tags(text)
         if space == "space":
-            return text.replace("\t","").replace("</div","").replace("\n","")
-        text = text.replace(", ",",").split(",")
+            return text.replace("\t", "").replace("</div", "").replace("\n", "")
+        text = text.replace(", ", ",").split(",")
         return text
 
     '''
@@ -59,7 +60,8 @@ class Bundle:
         # caching appid
         self.appid = appid
 
-        cookies = {'birthtime': '28801', 'lastagecheckage':'9-1-1991', 'mature_content': '1', 'wants_mature_content': '1'}
+        cookies = {'birthtime': '28801', 'lastagecheckage': '9-1-1991', 'mature_content': '1',
+                   'wants_mature_content': '1'}
 
         # following steam json format
         data = {}
@@ -67,13 +69,12 @@ class Bundle:
         data[appid]['success'] = False
         data[appid]['data'] = {}
 
-        res = requests.get(self.store_url+appid, cookies=cookies)
+        res = requests.get(self.store_url + appid, cookies=cookies)
 
         # checking if bundle exists
         # if bundle does not exist it redirects to store home, thus we check for any redirects
         if not res.history:
             data[appid]['success'] = True
-
 
         # if bundle exists procced with parsing
         if data[appid]['success']:
@@ -83,46 +84,47 @@ class Bundle:
             details['name'] = soup.select('.pageheader')[0].text
             details['bundle_id'] = soup.select('.game_area_purchase_game')[0].get('data-ds-bundleid')
             # selecting the correct div
-            leftcol = soup.find('div', {'class':'leftcol'})
-            rightcol = soup.find('div', {'class':'rightcol'})
-            
+            leftcol = soup.find('div', {'class': 'leftcol'})
+            rightcol = soup.find('div', {'class': 'rightcol'})
+
             # header image
             details['header_image'] = leftcol.select('.package_header')[0].get('src')
-            
+
             # description
             if leftcol.select('.bundle_description'):
                 details['bundle_description'] = leftcol.select('.bundle_description')[0].select('p')[0].text
-            
+
             # from rightcol
-            right_detail = str(rightcol.findAll('div', {'class':'details_block'})[0])
+            right_detail = str(rightcol.findAll('div', {'class': 'details_block'})[0])
             details['genres'] = self._getList(right_detail, 'Genre:')
             details['developers'] = self._getList(right_detail, 'Developer:')
             details['publishers'] = self._getList(right_detail, 'Publisher:')
             details['franchise'] = self._getList(right_detail, 'Franchise:')
             details['languages'] = self._getList(right_detail, 'Languages:')
             details['drm'] = self._getList(right_detail, 'DRM:', 'space')
-            
+
             details['categories'] = []
-            for category in rightcol.findAll('div', {'class':'game_area_details_specs'}):
+            for category in rightcol.findAll('div', {'class': 'game_area_details_specs'}):
                 dict = {}
                 id = re.sub(r'^[\w:\/\.\?]+=', '', category.find('a').get('href'))
                 id = int(re.sub(r'\D[\w]+', '', id))
                 dict[id] = w3lib.html.remove_tags(str(category))
                 details['categories'].append(dict)
-            
+
             # prices
             details['price'] = {}
             details['price']['initial'] = 0
             details['price']['final'] = int(leftcol.select('.discount_block')[0].get('data-price-final'))
-            details['price']['discount_percent'] = int(re.findall(r'\d+',leftcol.select('.bundle_base_discount')[0].text)[0])
+            details['price']['discount_percent'] = int(
+                re.findall(r'\d+', leftcol.select('.bundle_base_discount')[0].text)[0])
             details['price']['initial_formatted'] = leftcol.select('.bundle_final_package_price')[0].text
             details['price']['final_formatted'] = leftcol.select('.discount_final_price')[0].text
-            details['price']['initial'] = math.ceil((details['price']['final']/100)/((100-details['price']['discount_percent'])/100))*100
-            
-            
+            details['price']['initial'] = math.ceil(
+                (details['price']['final'] / 100) / ((100 - details['price']['discount_percent']) / 100)) * 100
+
             # package items
             details['package_item'] = []
-            for item in leftcol.findAll('div', {'class':'tab_item'}):
+            for item in leftcol.findAll('div', {'class': 'tab_item'}):
                 package_item = {}
                 package_item['name'] = item.select('.tab_item_name')[0].text
                 if item.get('data-ds-packageid'):
@@ -132,26 +134,26 @@ class Bundle:
                         package_item['appid'][i] = int(package_item['appid'][i])
                 else:
                     package_item['appid'] = int(item.get('data-ds-appid'))
-                
+
                 package_item['app_link'] = item.select('.tab_item_overlay')[0].get('href')
                 package_item['app_image'] = item.select('.tab_item_cap_img')[0].get('src')
-                
+
                 # app prices
                 package_item['app_price'] = {}
                 package_item['app_price']['final'] = int(item.select('.discount_block')[0].get('data-price-final'))
                 package_item['app_price']['final_formatted'] = item.select('.discount_final_price')[0].text
-                
+
                 # platforms
                 package_item['platforms'] = {}
                 package_item['platforms']['windows'] = True if item.select('.win') else False
                 package_item['platforms']['mac'] = True if item.select('.mac') else False
                 package_item['platforms']['linux'] = True if item.select('.linux') else False
-                
+
                 # categories
                 package_item['categories'] = item.select('.tab_item_details')[0].text.strip().split(",")
-                
+
                 details['package_item'].append(package_item)
-                
+
             data[appid]['data'] = details
 
         # if game exists

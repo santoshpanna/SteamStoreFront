@@ -1,12 +1,11 @@
 """Main module."""
-from .errors import _NoDetailsProvided
-from .errors import _NonNumericAppID
-from .errors import _InvalidCategory
-from .errors import _InvalidURL
+from .errors import InvalidArgument
+from .errors import Errors
 from .misc import FuzzySearch
 from .app import App
 from .package import Package
 from .bundle import Bundle
+
 
 class SteamStoreFront:
     """
@@ -29,8 +28,7 @@ class SteamStoreFront:
 
         category defaults to "app"
 
-    :raise AppNotFound: Appid was not found or invalid.
-    :raise NoDetailsProvided: All of the 3 appid, name, url were not provided.
+    :raise InvalidArgument: See error message for explanation. Additionally error can be looked up for argument and type for error code.
 
     :rtype: None if key not found.
     """
@@ -41,6 +39,7 @@ class SteamStoreFront:
     app = None
     bundle = None
     package = None
+    Errors = Errors
 
     # populate
     def _populate(self, **kwargs):
@@ -59,14 +58,14 @@ class SteamStoreFront:
 
                 # appid is not integer, throw error
                 else:
-                    raise _NonNumericAppID("Appid must be integer or numeric string.")
+                    raise InvalidArgument("Appid must be integer or numeric string.", kwargs, Errors.InvalidAppId)
 
                 # appid is valid, now assign category
                 # default category is app
                 if self.appid:
                     self.category = 'app'
 
-                    #valid categories
+                    # valid categories
                     accepted = ('sub', 'package', 'app', 'bundle')
 
                     # check if passed category is valid
@@ -74,7 +73,7 @@ class SteamStoreFront:
                         if kwargs["category"] in accepted:
                             self.category = kwargs["category"]
                         else:
-                            raise _InvalidCategory("Invalid category.")
+                            raise InvalidArgument("Invalid category, {}.".format(kwargs['category']), kwargs, Errors.InvalidCategory)
 
             # name was passed
             if "name" in kwargs:
@@ -83,7 +82,7 @@ class SteamStoreFront:
                 self.appid = obj.getAppID(kwargs["name"])
                 self.category = 'app'
                 if not self.appid:
-                    raise _AppNotFound("App not found for this game.")
+                    raise InvalidArgument("App not found for this game {}".format(kwargs['name']), kwargs, Errors.InvalidName)
 
             # url was passed
             if "url" in kwargs:
@@ -93,7 +92,7 @@ class SteamStoreFront:
                 valid = ('https://store.steampowered.com', 'store.steampowered.com')
                 if kwargs["url"].startswith(valid):
                     if kwargs["url"].startswith(valid[1]):
-                        url = "https://"+kwargs["url"]
+                        url = "https://" + kwargs["url"]
                     else:
                         url = kwargs["url"]
 
@@ -107,7 +106,8 @@ class SteamStoreFront:
         if "init" not in kwargs:
             # no arugments were passed or details are not filled
             if not self.appid:
-                raise _NoDetailsProvided("One of the following is need: Appid, Game name or url.")
+                raise InvalidArgument("No identifier was passed, atleast one of appid, url, name is required.", kwargs, Errors.NoArgumentPassed)
+
         else:
             self.app = App()
             self.bundle = Bundle()
@@ -120,7 +120,7 @@ class SteamStoreFront:
         app = App()
         bundle = Bundle()
         package = Package()
-    
+
     def getRaw(self, **kwargs):
         """
             getRaw(appid=appid, category=category, name=name, url=url)
@@ -136,7 +136,7 @@ class SteamStoreFront:
         """
 
         # store data
-        self._populate( **kwargs)
+        self._populate(**kwargs)
 
         # get data for app
         if self.category == "app":
@@ -151,7 +151,7 @@ class SteamStoreFront:
             return self.bundle.getRaw(self.appid)
 
         else:
-            raise _AppNotFound("No app with {} appid.".format(self.appid))
+            raise InvalidArgument("No app with {} appid.".format(self.appid), kwargs, Errors.InvalidAppId)
 
     # returns store url
     def getLink(self, **kwargs):
@@ -168,15 +168,15 @@ class SteamStoreFront:
         """
 
         if self.category == 'app':
-            return ('https://store.steampowered.com/app/'+self.appid)
+            return 'https://store.steampowered.com/app/' + self.appid
         elif self.category == 'sub' or self.category == 'package':
-            return('https://store.steampowered.com/sub/'+self.appid)
+            return 'https://store.steampowered.com/sub/' + self.appid
         elif self.category == 'bundle':
-            return('https://store.steampowered.com/bundle/'+self.appid)
+            return 'https://store.steampowered.com/bundle/' + self.appid
 
     # function to return price
     # currency only works with app and sub|package
-    def getPrice(self, **kwargs): 
+    def getPrice(self, **kwargs):
         """
             getPrice(appid=appid, category=category, name=name, url=url, currency=currency)
 
@@ -318,7 +318,7 @@ class SteamStoreFront:
         elif self.category == "sub" or self.category == "package":
             return self.package.getController(self.appid)
 
-        else :
+        else:
             return None
 
     # returns dlc
@@ -417,7 +417,7 @@ class SteamStoreFront:
             return None
 
     # returns short description
-    def getShortDescription(self, appid):
+    def getShortDescription(self, **kwargs):
         """
             getShortDescription(appid=appid, category=category, name=name, url=url)
 
@@ -466,7 +466,7 @@ class SteamStoreFront:
 
         else:
             return None
-    
+
     # returns supported languages
     # format = raw (default) | normal | list
     # format is only for app category
@@ -505,7 +505,7 @@ class SteamStoreFront:
 
         else:
             return None
-    
+
     # returns reviews
     # format = raw (default) | list
     '''
@@ -515,6 +515,7 @@ class SteamStoreFront:
             {'review': '', 'score': '', 'link': '', 'reviewer'}
         ]
     '''
+
     def getReviews(self, **kwargs):
         """
             getReviews(appid=appid, category=category, name=name, url=url, format=format)
@@ -525,7 +526,7 @@ class SteamStoreFront:
             
             - supported categories = [app]
             - supported categories with format = [app]
-            - supported fomat = [raw(default), list]
+            - supported format = [raw(default), list]
             
             :return: returns reviews
             :rtype: str or list
@@ -576,7 +577,7 @@ class SteamStoreFront:
 
         else:
             return None
-    
+
     # returns website
     def getWebsite(self, **kwargs):
         """
@@ -601,7 +602,7 @@ class SteamStoreFront:
 
         else:
             return None
-    
+
     # returns pc requirements
     # format = raw (default) | dict
     def getPCRequirements(self, **kwargs):
@@ -631,7 +632,7 @@ class SteamStoreFront:
                 return self.app.getPCRequirements(self.appid, "raw", "raw")
         else:
             return None
-    
+
     # returns mac requirements
     # format = raw (default) | dict
     def getMacRequirements(self, **kwargs):
@@ -1001,7 +1002,7 @@ class SteamStoreFront:
             :return: returns movies
             :rtype: list
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1026,7 +1027,7 @@ class SteamStoreFront:
             :return: returns recommendations
             :rtype: dict
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1051,7 +1052,7 @@ class SteamStoreFront:
             :return: returns achievements list
             :rtype: list
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1076,7 +1077,7 @@ class SteamStoreFront:
             :return: returns release date
             :rtype: dict
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1089,9 +1090,10 @@ class SteamStoreFront:
             return self.package.getReleaseDate(self.appid)
 
         else:
-            return None    
+            return None
 
-    # returns ratings
+            # returns ratings
+
     def getRatings(self, **kwargs):
         """
             getRatings(appid=appid, category=category, name=name, url=url)
@@ -1105,7 +1107,7 @@ class SteamStoreFront:
             :return: returns (review_score, rating, review_summary)
             :rtype: tuple
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1130,7 +1132,7 @@ class SteamStoreFront:
             :return: returns suport info
             :rtype: dict
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1155,7 +1157,7 @@ class SteamStoreFront:
             :return: returns background image
             :rtype: str
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1180,7 +1182,7 @@ class SteamStoreFront:
             :return: returns content descriptors
             :rtype: dict
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1209,7 +1211,7 @@ class SteamStoreFront:
             :return: returns franchise
             :rtype: list
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1257,7 +1259,7 @@ class SteamStoreFront:
             :return: returns package item (apps and packages)
             :rtype: list
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1285,7 +1287,7 @@ class SteamStoreFront:
             :return: returns page image
             :rtype: str
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1309,7 +1311,7 @@ class SteamStoreFront:
             :return: returns small logo
             :rtype: str
         """
-        
+
         # store data
         self._populate(**kwargs)
 
@@ -1333,7 +1335,7 @@ class SteamStoreFront:
             :return: returns apps
             :rtype: list
         """
-        
+
         # store data
         self._populate(**kwargs)
 
