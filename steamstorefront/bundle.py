@@ -114,12 +114,12 @@ class Bundle:
                 pass
             
             
-            details['genres'] = _getList(right_detail, 'Genre:') if right_detail else None
-            details['developers'] = _getList(right_detail, 'Developer:') if right_detail else None
-            details['publishers'] = _getList(right_detail, 'Publisher:') if right_detail else None
-            details['franchise'] = _getList(right_detail, 'Franchise:') if right_detail else None
-            details['languages'] = _getList(right_detail, 'Languages:') if right_detail else None
-            details['drm'] = _getList(right_detail, 'DRM:', 'space') if right_detail else None
+            details['genres'] = self._getList(right_detail, 'Genre:') if right_detail else None
+            details['developers'] = self._getList(right_detail, 'Developer:') if right_detail else None
+            details['publishers'] = self._getList(right_detail, 'Publisher:') if right_detail else None
+            details['franchise'] = self._getList(right_detail, 'Franchise:') if right_detail else None
+            details['languages'] = self._getList(right_detail, 'Languages:') if right_detail else None
+            details['drm'] = self._getList(right_detail, 'DRM:', 'space') if right_detail else None
                 
 
             details['categories'] = []
