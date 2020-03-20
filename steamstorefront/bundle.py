@@ -80,79 +80,135 @@ class Bundle:
         if data[appid]['success']:
             details = {}
             soup = BeautifulSoup(res.content, 'html5lib')
-            # get name of bundle and bundle_id
-            details['name'] = soup.select('.pageheader')[0].text
-            details['bundle_id'] = soup.select('.game_area_purchase_game')[0].get('data-ds-bundleid')
+            # get name of bundle and bundle_id   
+            try:
+                details['name'] = soup.find(attrs={'class': 'pageheader'}).get_text()
+            except AttributeError as e:
+                details['name'] = None
+            try:
+                details['bundle_id'] = soup.find(attrs={'class': 'game_area_purchase_game'}).get('data-ds-bundleid')
+            except AttributeError as e:
+                details['bundle_id'] = None
             # selecting the correct div
-            leftcol = soup.find('div', {'class': 'leftcol'})
-            rightcol = soup.find('div', {'class': 'rightcol'})
+            leftcol = soup.find('div', {'class':'leftcol'})
+            rightcol = soup.find('div', {'class':'rightcol'})
 
             # header image
-            details['header_image'] = leftcol.select('.package_header')[0].get('src')
-
-            # description
-            if leftcol.select('.bundle_description'):
-                details['bundle_description'] = leftcol.select('.bundle_description')[0].select('p')[0].text
+            if leftcol:
+                try:
+                    details['header_image'] = leftcol.find(attrs={'class': 'package_header'}).get('src')
+                except AttributeError as e:
+                    details['header_image'] = None
+                    
+                # description
+                try:
+                    details['bundle_description'] = leftcol.find(attrs={'class': 'bundle_description'}).find('p').get_text()
+                except AttributeError as e:
+                    details['bundle_description'] = None
 
             # from rightcol
-            right_detail = str(rightcol.findAll('div', {'class': 'details_block'})[0])
-            details['genres'] = self._getList(right_detail, 'Genre:')
-            details['developers'] = self._getList(right_detail, 'Developer:')
-            details['publishers'] = self._getList(right_detail, 'Publisher:')
-            details['franchise'] = self._getList(right_detail, 'Franchise:')
-            details['languages'] = self._getList(right_detail, 'Languages:')
-            details['drm'] = self._getList(right_detail, 'DRM:', 'space')
+            right_detail = None
+            try:
+                right_detail = str(rightcol.findAll('div', {'class':'details_block'})[0])
+            except IndexError as e:
+                pass
+            
+            
+            details['genres'] = _getList(right_detail, 'Genre:') if right_detail else None
+            details['developers'] = _getList(right_detail, 'Developer:') if right_detail else None
+            details['publishers'] = _getList(right_detail, 'Publisher:') if right_detail else None
+            details['franchise'] = _getList(right_detail, 'Franchise:') if right_detail else None
+            details['languages'] = _getList(right_detail, 'Languages:') if right_detail else None
+            details['drm'] = _getList(right_detail, 'DRM:', 'space') if right_detail else None
+                
 
             details['categories'] = []
-            for category in rightcol.findAll('div', {'class': 'game_area_details_specs'}):
-                dict = {}
-                id = re.sub(r'^[\w:\/\.\?]+=', '', category.find('a').get('href'))
-                id = int(re.sub(r'\D[\w]+', '', id))
-                dict[id] = w3lib.html.remove_tags(str(category))
-                details['categories'].append(dict)
+            try:
+                for category in rightcol.findAll('div', {'class':'game_area_details_specs'}):
+                    dict = {}
+                    id = re.sub(r'^[\w:\/\.\?]+=', '', category.find('a').get('href'))
+                    id = int(re.sub(r'\D[\w]+', '', id))
+                    dict[id] = w3lib.html.remove_tags(str(category))
+                    details['categories'].append(dict)
+            except AttributeError as e:
+                details['categories'] = None
 
             # prices
             details['price'] = {}
             details['price']['initial'] = 0
-            details['price']['final'] = int(leftcol.select('.discount_block')[0].get('data-price-final'))
-            details['price']['discount_percent'] = int(
-                re.findall(r'\d+', leftcol.select('.bundle_base_discount')[0].text)[0])
-            details['price']['initial_formatted'] = leftcol.select('.bundle_final_package_price')[0].text
-            details['price']['final_formatted'] = leftcol.select('.discount_final_price')[0].text
-            details['price']['initial'] = math.ceil(
-                (details['price']['final'] / 100) / ((100 - details['price']['discount_percent']) / 100)) * 100
+            try:
+                details['price']['final'] = int(leftcol.select('.discount_block')[0].get('data-price-final'))
+            except IndexError:
+                details['price']['final'] = None
+                
+            try:
+                details['price']['discount_percent'] = int(re.findall(r'\d+',leftcol.select('.bundle_base_discount')[0].text)[0])
+            except IndexError:
+                details['price']['discount_percent'] = None
+            
+            try:
+                details['price']['initial_formatted'] = leftcol.select('.bundle_final_package_price')[0].text
+            except IndexError:
+                details['price']['initial_formatted'] = None
+            
+            try:
+                details['price']['final_formatted'] = leftcol.select('.discount_final_price')[0].text
+            except IndexError:
+                details['price']['final_formatted'] = None
+            if details['price']['final'] and details['price']['discount_percent']:
+                details['price']['initial'] = math.ceil((details['price']['final']/100)/((100-details['price']['discount_percent'])/100))*100
+
 
             # package items
             details['package_item'] = []
-            for item in leftcol.findAll('div', {'class': 'tab_item'}):
-                package_item = {}
-                package_item['name'] = item.select('.tab_item_name')[0].text
-                if item.get('data-ds-packageid'):
-                    package_item['packageid'] = item.get('data-ds-packageid')
-                    package_item['appid'] = item.get('data-ds-appid').split(",")
-                    for i in range(len(package_item['appid'])):
-                        package_item['appid'][i] = int(package_item['appid'][i])
-                else:
-                    package_item['appid'] = int(item.get('data-ds-appid'))
+            try:
+                for item in leftcol.findAll('div', {'class':'tab_item'}):
+                    package_item = {}
+                    try:
+                        package_item['name'] = item.select('.tab_item_name')[0].text
+                    except IndexError:
+                        package_item['name'] = None
+                        
+                    try:
+                        package_item['packageid'] = item.get('data-ds-packageid')
+                        package_item['appid'] = item.get('data-ds-appid').split(",")
+                        for i in range(len(package_item['appid'])):
+                            package_item['appid'][i] = int(package_item['appid'][i])
+                    except AttributeError:
+                        package_item['appid'] = int(item.get('data-ds-appid'))
+                    try:
+                        package_item['app_link'] = item.select('.tab_item_overlay')[0].get('href')
+                    except IndexError:
+                        package_item['app_link'] = None
+                    try:
+                        package_item['app_image'] = item.select('.tab_item_cap_img')[0].get('src')
+                    except IndexError:
+                        package_item['app_image'] = None
 
-                package_item['app_link'] = item.select('.tab_item_overlay')[0].get('href')
-                package_item['app_image'] = item.select('.tab_item_cap_img')[0].get('src')
+                    # app prices
+                    package_item['app_price'] = {}
+                    try:
+                        package_item['app_price']['final'] = int(item.select('.discount_block')[0].get('data-price-final'))
+                        package_item['app_price']['final_formatted'] = item.select('.discount_final_price')[0].text
+                    except IndexError:
+                        package_item['app_price']['final'] = None
+                        package_item['app_price']['final_formatted'] = None
+                    # platforms
+                    package_item['platforms'] = {}
+                    package_item['platforms']['windows'] = True if item.select('.win') else False
+                    package_item['platforms']['mac'] = True if item.select('.mac') else False
+                    package_item['platforms']['linux'] = True if item.select('.linux') else False
 
-                # app prices
-                package_item['app_price'] = {}
-                package_item['app_price']['final'] = int(item.select('.discount_block')[0].get('data-price-final'))
-                package_item['app_price']['final_formatted'] = item.select('.discount_final_price')[0].text
+                    # categories
+                    try:
+                        package_item['categories'] = item.select('.tab_item_details')[0].text.strip().split(",")
+                    except IndexError:
+                        package_item['categories'] = None
+                        
+                    details['package_item'].append(package_item)
 
-                # platforms
-                package_item['platforms'] = {}
-                package_item['platforms']['windows'] = True if item.select('.win') else False
-                package_item['platforms']['mac'] = True if item.select('.mac') else False
-                package_item['platforms']['linux'] = True if item.select('.linux') else False
-
-                # categories
-                package_item['categories'] = item.select('.tab_item_details')[0].text.strip().split(",")
-
-                details['package_item'].append(package_item)
+            except AttributeError:
+                details['package_item'] = None
 
             data[appid]['data'] = details
 
