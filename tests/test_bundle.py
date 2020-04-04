@@ -9,8 +9,8 @@ from click.testing import CliRunner
 from steamstorefront import SteamStoreFront
 from steamstorefront import cli
 
-# Tomb Raider Collection
-appid = 2823
+# Shadow of the Tomb Raider: Definitive Edition
+appid = 12231
 
 @pytest.fixture
 def app():
@@ -25,7 +25,7 @@ def testGetRaw(app):
 # returns name
 def testGetName(app):
     data = app.getName(appid=appid, category='bundle')
-    test = (data == "Tomb Raider Collection")
+    test = (data == "Shadow of the Tomb Raider: Definitive Edition")
     assert test == True
 
 # returns header image
@@ -91,5 +91,5 @@ def testGetPrice(app):
 # returns package items
 def testGetPackageItem(app):
     data = app.getPackageItem(appid=appid, category='bundle')
-    test = (type(data) == type(list()) and data[0]['name'] == "Tomb Raider: Legend")
+    test = (type(data) == type(list()) and data[0]['name'] == "Shadow of the Tomb Raider - Deluxe Extras")
     assert test == True
