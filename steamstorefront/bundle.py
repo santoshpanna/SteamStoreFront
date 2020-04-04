@@ -138,24 +138,24 @@ class Bundle:
             details['price']['initial'] = 0
             try:
                 details['price']['final'] = int(leftcol.select('.discount_block')[0].get('data-price-final'))
-            except IndexError:
+            except (IndexError, TypeError):
                 details['price']['final'] = None
                 
             try:
                 details['price']['discount_percent'] = int(re.findall(r'\d+',leftcol.select('.bundle_base_discount')[0].text)[0])
-            except IndexError:
+            except (IndexError, TypeError):
                 details['price']['discount_percent'] = None
             
             try:
                 details['price']['initial_formatted'] = leftcol.select('.bundle_final_package_price')[0].text
-            except IndexError:
+            except (IndexError, TypeError):
                 details['price']['initial_formatted'] = None
             
             try:
                 details['price']['final_formatted'] = leftcol.select('.discount_final_price')[0].text
-            except IndexError:
+            except (IndexError, TypeError):
                 details['price']['final_formatted'] = None
-            if details['price']['final'] and details['price']['discount_percent']:
+            if details['price']['final'] is not None and details['price']['discount_percent'] is not None:
                 details['price']['initial'] = math.ceil((details['price']['final']/100)/((100-details['price']['discount_percent'])/100))*100
 
 
@@ -190,7 +190,7 @@ class Bundle:
                     try:
                         package_item['app_price']['final'] = int(item.select('.discount_block')[0].get('data-price-final'))
                         package_item['app_price']['final_formatted'] = item.select('.discount_final_price')[0].text
-                    except IndexError:
+                    except (IndexError, TypeError):
                         package_item['app_price']['final'] = None
                         package_item['app_price']['final_formatted'] = None
                     # platforms
