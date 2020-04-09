@@ -28,11 +28,13 @@ class Package:
         self.appid = appid
 
         # request the data
-        json = requests.get(self.api_url + appid).json()
+        res = requests.get(self.api_url + appid)
 
-        # if game exists
-        if json[appid]['success']:
-            self.data = json[appid]['data']
+        if res.status_code == requests.codes.ok:
+            json = res.json()
+            # if game exists
+            if json[appid]['success']:
+                self.data = json[appid]['data']
             return self.data
         else:
             return None

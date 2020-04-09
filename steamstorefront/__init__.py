@@ -2,7 +2,7 @@
 
 __author__ = """Santosh Panna"""
 __email__ = 'santoshpanna.sp@gmail.com'
-__version__ = '0.0.3.7'
+__version__ = '0.0.3.8'
 
 import builtins
 
