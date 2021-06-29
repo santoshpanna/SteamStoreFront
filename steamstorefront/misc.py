@@ -21,6 +21,6 @@ class FuzzySearch:
 
         # return if found else return None
         if tup:
-            return self.json["applist"]["apps"]["app"][a[2]]["appid"]
+            return self.json["applist"]["apps"]["app"][tup[2]]["appid"]
         else:
             return None
