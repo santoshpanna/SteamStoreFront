@@ -10,7 +10,7 @@ class FuzzySearch:
         if not self.json and not self.indexed:
             self.json = requests.get('http://api.steampowered.com/ISteamApps/GetAppList/v0001/').json()
         if not self.indexed:
-            self.indexed = {idx: k["name"] for idx, k in enumerate(json["applist"]["apps"]["app"])}
+            self.indexed = {idx: k["name"] for idx, k in enumerate(self.json["applist"]["apps"]["app"])}
 
     def getAppID(self, name):
         # populate it
